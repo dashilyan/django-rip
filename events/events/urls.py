@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from events_app import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.events_list, name='list-events'),
+    path('request/<int:id>/', views.request, name='current-request'),
+    path('event/<int:id>/', views.event_description, name='event-description'),
 ]

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=ALS+Sector&display=swap" rel="stylesheet" />
+        {% load static %}
+        <link href="{% static 'styles.css' %}" rel="stylesheet" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div class="bmstu">
+          <div class="bmstu-image"><img src="http://192.168.1.24:9000/static/bmstu.png"></div>
+          <div class="bmstu-line"></div>
+          <div class="bmstu-text">МОСКОВСКИЙ ГОСУДАРСТВЕННЫЙ ТЕХНИЧЕСКИЙ УНИВЕРСИТЕТ ИМ Н. Э. БАУМАНА</div>
+        </div>
+          <div class="menu">
+
+            <div class="search">
+            <form action="/" method="GET" class="search-form">
+                <input type="text" name="event_name" value="{{ input_value }}" class="search-bar">
+                <input type="submit" value="" class="search-button">
+                               
+            </form> 
+            </div>
+
+            <div class="cart">
+                <a href="/request/{{ request_id }}">
+                    <div class="cart-icon"><img src="http://192.168.1.24:9000/static/request-icon.png"></div>
+                    <div class="cart-count">{{ cart_count }}</div>
+                </a>
+            </div>
+            
+          </div>
+          <div class="events">Мероприятия музея МГТУ</div>
+          <div class="event-container">
+            {% for event in events %}
+            <a href="event/{{ event.id }}">
+                <div class="event-card">
+                <div class="event-text">
+                    <h1>{{ event.name }}</h1>
+                    <p>{{ event.type }}</p>
+                </div>
+                <div class="event-img"><img src="{{ event.img_url }}"></div>
+                </div>
+            </a>
+            {% endfor %}
+          </div>
+    </body>
+    </html>
