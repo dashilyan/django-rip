@@ -22,6 +22,8 @@ from events_app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.events_list, name='list-events'),
-    path('request/<int:id>/', views.request, name='current-request'),
+    path('visit/<int:id>/', views.visit, name='current-visit'),
     path('event/<int:id>/', views.event_description, name='event-description'),
+    path('add-event/<int:id>/', views.add_event, name='add-event'),
+    path('visit/<int:id>/del-visit/', views.del_visit, name='del-visit')
 ]

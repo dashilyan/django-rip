@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="bmstu">
-          <div class="bmstu-image"><img src="http://192.168.1.24:9000/static/bmstu.png"></div>
+          <div class="bmstu-image"><img src="http://192.168.56.101:9000/static/bmstu.png"></div>
           <div class="bmstu-line"></div>
           <div class="bmstu-text">МОСКОВСКИЙ ГОСУДАРСТВЕННЫЙ ТЕХНИЧЕСКИЙ УНИВЕРСИТЕТ ИМ Н. Э. БАУМАНА</div>
         </div>
@@ -23,8 +23,8 @@
             </div>
 
             <div class="cart">
-                <a href="/request/{{ request_id }}">
-                    <div class="cart-icon"><img src="http://192.168.1.24:9000/static/request-icon.png"></div>
+                <a href="/visit/{{ visit_id }}">
+                    <div class="cart-icon"><img src="http://192.168.56.101:9000/static/request-icon.png"></div>
                     <div class="cart-count">{{ cart_count }}</div>
                 </a>
             </div>
@@ -33,16 +33,23 @@
           <div class="events">Мероприятия музея МГТУ</div>
           <div class="event-container">
             {% for event in events %}
-            <a href="event/{{ event.id }}">
-                <div class="event-card">
-                <div class="event-text">
-                    <h1>{{ event.name }}</h1>
-                    <p>{{ event.type }}</p>
-                </div>
-                <div class="event-img"><img src="{{ event.img_url }}"></div>
-                </div>
-            </a>
+            <div class="event-card">
+                <a href="event/{{ event.id }}">
+                    <div class="event-text">
+                        <h1>{{ event.event_name }}</h1>
+                        <p>{{ event.event_type }}</p>
+                        <p>{{ event.duration }}</p>
+                        <a href="add-event/{{ event.id }}/">
+                            <div class="add-event-button">Записаться</div>
+                        </a>
+                    </div>
+                    <div class="event-img">
+                        <img src="{{ event.img_url }}">
+                    </div>
+                </a>
+            </div>
             {% endfor %}
-          </div>
+        </div>
+        
     </body>
     </html>

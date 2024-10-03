@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="https://fonts.googleapis.com/css?family=ALS+Sector&display=swap" rel="stylesheet" />
+    <title>Мероприятие музея МГТУ</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+
+    <a href="/">
+        <div class="bmstu">
+            <div class="bmstu-image"><img src="http://192.168.56.101:9000/static/bmstu.png"></div>
+            <div class="bmstu-line"></div>
+            <div class="bmstu-text">МОСКОВСКИЙ ГОСУДАРСТВЕННЫЙ ТЕХНИЧЕСКИЙ УНИВЕРСИТЕТ ИМ Н. Э. БАУМАНА</div>
+        </div>
+    </a>
+
+    <div class="menu3">
+        <h1>Заявка на мероприятие</h1>
+        <p>{{ current_visit.group }}</p>
+        <a href="del-visit/">
+            <div class="del-visit-button">Отменить запись</div>
+        </a>
+      </div>
+    <div class="main_visit">
+    {% if events %}
+        {% for event in events %}
+        <div class="event-card-long">
+            <div class="event-card-long-text">
+                <h1>{{ event.event_name }} </h1>
+                <p>{{ event.event_type }}</p>
+                <p>{{ event.duration }}</p>
+                <h3>Дата: {{ event.event_date }}</h3>
+            </div>
+            <div class="event-card-long-img"><img src="{{ event.img_url }}"></div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-cart">Вы не записываетесь ни на одно мероприятие</div>
+    {% endif %}
+    </div>
+</body>
+</html>

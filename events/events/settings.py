@@ -81,6 +81,16 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'museum_visits_db', # Имя вашей БД. Если вы создали черезе psql или IDE свою базу и хотите использовать его - пропишите его имя здесь
+        'USER': 'museum_admin',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432, # Стандартный порт PostgreSQL
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -104,7 +114,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-RU'
+
+# Пример вывода: 16 сентября 2012 
+DATE_FORMAT = 'd E Y'
 
 TIME_ZONE = 'UTC'
 
