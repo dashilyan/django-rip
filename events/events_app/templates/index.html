@@ -41,13 +41,14 @@
                         <p>{{ event.duration }}</p>
                         <a href="add-event/{{ event.id }}/">
                             <div class="add-event-button">Записаться</div>
-                        </a>
+                        </a> 
                     </div>
                     <div class="event-img">
                         <img src="{{ event.img_url }}">
                     </div>
                 </a>
             </div>
+
             {% endfor %}
         </div>
         
