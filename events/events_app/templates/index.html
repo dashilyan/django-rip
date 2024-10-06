@@ -23,7 +23,7 @@
             </div>
 
             <div class="cart">
-                <a href="/request/{{ request_id }}">
+                <a href="/visit/{{ visit_id }}">
                     <div class="cart-icon"><img src="http://192.168.1.24:9000/static/request-icon.png"></div>
                     <div class="cart-count">{{ cart_count }}</div>
                 </a>
@@ -38,6 +38,7 @@
                 <div class="event-text">
                     <h1>{{ event.name }}</h1>
                     <p>{{ event.type }}</p>
+                    <p>{{ event.duration }}</p>
                 </div>
                 <div class="event-img"><img src="{{ event.img_url }}"></div>
                 </div>
