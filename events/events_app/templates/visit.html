@@ -24,7 +24,6 @@
         </a>
       </div>
     <div class="main_visit">
-    {% if events %}
         {% for event in events %}
         <div class="event-card-long">
             <div class="event-card-long-text">
@@ -36,9 +35,6 @@
             <div class="event-card-long-img"><img src="{{ event.img_url }}"></div>
         </div>
         {% endfor %}
-    {% else %}
-        <div class="empty-cart">Вы не записываетесь ни на одно мероприятие</div>
-    {% endif %}
     </div>
 </body>
 </html>

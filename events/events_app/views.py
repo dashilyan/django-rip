@@ -9,6 +9,9 @@ def events_list(request):
 
     events = Event.objects.all()
 
+    if 'event_name' in request.GET:
+        events = Event.objects.filter(event_name__icontains=request.GET['event_name'])
+
     cart_count = 0
 
     visit_id = 1
@@ -19,28 +22,28 @@ def events_list(request):
         if EventVisit.objects.filter(visit=visit).exists():
             event_visit = EventVisit.objects.filter(visit=visit)
             cart_count = event_visit.count()
-
-    filtered_events = []
      
-    if 'event_name' in request.GET:
-        for event in events:
-            if request.GET['event_name'].lower() in event.event_name.lower():
-                filtered_events.append(event)
-        return render(request, 'index.html', {'events': filtered_events, 'input_value':request.GET['event_name'],'cart_count':cart_count,'visit_id':visit_id})
     
-    return render(request, 'index.html', {'events': events, 'cart_count':cart_count,'visit_id':visit_id})
+    if not 'event_name' in request.GET:
+        input_value=''
+    else:
+        input_value=request.GET['event_name']
+    return render(request, 'index.html', {'events': events, 'cart_count':cart_count,'visit_id':visit_id,'input_value':input_value})
 
 
 
 def visit(request, id):
     if id == 0:
-        return render(request, 'visit.html', {'current_visit':None})
+        return redirect('/')
     
     if Visit.objects.filter(id=id).exclude(status='draft').exists():
         return render(request, 'visit.html', {'current_visit':None})
     
     if not Visit.objects.filter(id=id).exists():
-        return render(request, 'visit.html', {'current_visit':None})
+        return redirect('/')
+    
+    if Visit.objects.filter(id=id).filter(status='deleted').exists():
+        return redirect('/')
 
     current_visit = Visit.objects.get(pk=id)
 
@@ -67,6 +70,8 @@ def event_description(request, id):
 
 def add_event(request, id):
 
+    events = Event.objects.all()
+
     if not Visit.objects.filter(status='draft').exists():
         visit = Visit()
         visit.group = 'ИУ5-51Б'
@@ -74,11 +79,12 @@ def add_event(request, id):
     else:
         visit = get_object_or_404(Visit, status='draft')
 
-
     event = get_object_or_404(Event, pk=id)
 
     if EventVisit.objects.filter(visit=visit, event=event).exists():
-        return redirect('/')
+        if 'event_name' in request.GET:
+            return redirect('/?event_name='+request.GET['event_name'])
+        return redirect('/?event_name='+request.GET['event_name'])
 
     event_visit = EventVisit()
     event_visit.date = '2024-10-31'
@@ -86,7 +92,7 @@ def add_event(request, id):
     event_visit.event = event
     event_visit.save()
 
-    return redirect('/')
+    return redirect('/?event_name='+request.GET['event_name'])
 
 def del_visit(request,id):
     with connection.cursor() as cursor:

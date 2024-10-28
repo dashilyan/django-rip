@@ -21,7 +21,6 @@
                                
             </form> 
             </div>
-
             <div class="cart">
                 <a href="/visit/{{ visit_id }}">
                     <div class="cart-icon"><img src="http://192.168.56.101:9000/static/request-icon.png"></div>
@@ -39,7 +38,7 @@
                         <h1>{{ event.event_name }}</h1>
                         <p>{{ event.event_type }}</p>
                         <p>{{ event.duration }}</p>
-                        <a href="add-event/{{ event.id }}/">
+                        <a href="add-event/{{ event.id }}/?event_name={{ input_value }}">
                             <div class="add-event-button">Записаться</div>
                         </a> 
                     </div>
