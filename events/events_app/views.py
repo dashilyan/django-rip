@@ -22,11 +22,9 @@ def events_list(request):
 
     filtered_events = []
      
-    if 'event_name' in request.GET:
-        for event in events:
-            if request.GET['event_name'].lower() in event.event_name.lower():
-                filtered_events.append(event)
-        return render(request, 'index.html', {'events': filtered_events, 'input_value':request.GET['event_name'],'cart_count':cart_count,'visit_id':visit_id})
+    if 'event_type' in request.GET and request.GET['event_type']!='':
+        filtered_events = Event.objects.filter(event_type__istartswith = request.GET['event_type'])
+        return render(request, 'index.html', {'events': filtered_events, 'input_value':request.GET['event_type'],'cart_count':cart_count,'visit_id':visit_id})
     
     return render(request, 'index.html', {'events': events, 'cart_count':cart_count,'visit_id':visit_id})
 
