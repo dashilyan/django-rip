@@ -18,24 +18,41 @@ from django.contrib import admin
 from events_app import views 
 from django.urls import include, path
 from rest_framework import routers
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="API Documentation",
+        default_version='v1',
+        description="API documentation for your project",
+        terms_of_service="https://www.example.com/terms/",
+        contact=openapi.Contact(email="contact@example.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    #permission_classes=(permissions.AllowAny,),
+)
+    
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+
     path(r'events/', views.EventsList.as_view(), name='events-list'),                         # список угроз (GET)
     path(r'events/<int:pk>/', views.EventDetail.as_view(), name='event-detail'),             # детальное описание мероприятия (GET), изменение (PUT), удаление (DELETE)
-    path(r'events/create/', views.EventDetail.as_view(), name='events-create'),                     # добавление (POST), 
-    path(r'events/delete/<int:pk>/', views.EventDetail.as_view(), name='events-delete'), 
+    #path(r'events/create/', views.EventDetail.as_view(), name='events-create'),                     # добавление (POST), 
+    #path(r'events/delete/<int:pk>/', views.EventDetail.as_view(), name='events-delete'), 
     path(r'events/signup/', views.AddEventView.as_view(), name='add-event-to-visit'), # добавление в заявку для пользователя
     path(r'events/image/', views.ImageView.as_view(), name='add-image'),             # замена изображения
 
     path(r'list-visits/',views.ListVisits.as_view(),name='list-visits-by-username'),
     path(r'visit/<int:pk>/',views.GetVisits.as_view(),name='get-visit-by-id'),
-    path(r'visit/<int:pk>/',views.GetVisits.as_view(),name='put-visit-by-id'),
+    #path(r'visit/<int:pk>/',views.GetVisits.as_view(),name='put-visit-by-id'),
     path(r'form-visit/<int:pk>/',views.FormVisit.as_view(),name='form-visit-by-id'),
     path(r'moderate-visit/<int:pk>/',views.ModerateVisit.as_view(),name='moderate-visit-by-id'),
-    path(r'delete-visit/<int:pk>/',views.ModerateVisit.as_view(),name='delete-visit-by-id'),
+    #path(r'delete-visit/<int:pk>/',views.ModerateVisit.as_view(),name='delete-visit-by-id'),
 
-    path(r'delete-event-visit/<int:pk>/',views.EditRequestThreat.as_view(),name='delete-event-from-visit'),
+    #path(r'delete-event-visit/<int:pk>/',views.EditRequestThreat.as_view(),name='delete-event-from-visit'),
     path(r'edit-event-visit/<int:pk>/',views.EditRequestThreat.as_view(),name='edit-event-in-visit'),
 
     path('register/', views.UserRegistrationView.as_view(), name='register'),

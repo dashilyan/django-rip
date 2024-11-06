@@ -7,7 +7,7 @@ class Event(models.Model):
     event_type = models.CharField(max_length=60, null=False)
     description = models.TextField(null=False)
     duration = models.CharField(max_length=16, null=False)
-    img_url = models.CharField(max_length=255, null=False)
+    img_url = models.CharField(max_length=255, null=True)
 
     class Meta:
         managed = True
@@ -18,9 +18,11 @@ class Visit(models.Model):
     created_at = models.DateTimeField(null=False, default=datetime.now())
     formed_at = models.DateTimeField(null=True)
     ended_at = models.DateTimeField(null=True)
-    user = models.ForeignKey(User,on_delete=models.CASCADE,default=1)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,default="userlogin")
     moderator = models.ForeignKey(User,null=True,related_name='moderator_id',on_delete=models.CASCADE)
     group = models.CharField(max_length=16, null=False)
+    visitors = models.IntegerField(null=False,default = 0)
+
     class Meta:
         managed = True
         db_table = 'visits'
