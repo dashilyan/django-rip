@@ -43,7 +43,8 @@ class EventsList(APIView):
 
         serializer = self.serializer_class(events, many=True)
         resp = serializer.data
-
+        draft_visit = False
+        
         if request.user is None:
             draft_visit = Visit.objects.filter(user=request.user, status='draft').first()
 
@@ -75,6 +76,9 @@ class EventDetail(APIView):
         responses={204: "No Content"}
     )
     def delete(self, request, pk):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
         event = get_object_or_404(self.model_class, pk=pk)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -86,6 +90,9 @@ class EventDetail(APIView):
         responses={201: EventDetailSerializer, 400: "Bad Request"}
     )
     def post(self, request):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+         
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -98,6 +105,9 @@ class EventDetail(APIView):
         responses={200: EventDetailSerializer, 400: "Bad Request"}
     )
     def put(self, request, pk):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+         
         event = get_object_or_404(self.model_class, pk=pk)
         serializer = self.serializer_class(event, data=request.data, partial=True)
         if serializer.is_valid():
@@ -108,19 +118,22 @@ class EventDetail(APIView):
 
 class AddEventView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    permission_classes=[IsAuthenticated]
+
     @csrf_exempt
     @swagger_auto_schema(
         request_body=EventVisitSerializer,
         operation_description="Добавление события в черновой визит пользователя",
         responses={200: "OK", 400: "Bad Request"}
     )
+
     def post(self, request):
-        if not Visit.objects.filter(user=1, status='draft').exists():
+        if not Visit.objects.filter(user=request.user, status='draft').exists():
             new_visit = Visit()
-            new_visit.user = 1
+            new_visit.user = request.user
             new_visit.save()
 
-        visit_id = Visit.objects.filter(user=1, status='draft').first().pk
+        visit_id = Visit.objects.filter(user=request.user, status='draft').first().pk
         serializer = EventVisitSerializer(data=request.data)
         if serializer.is_valid():
             new_visit_event = EventVisit()
@@ -172,6 +185,9 @@ class ImageView(APIView):
         responses={201: "Image uploaded successfully", 400: "Bad Request"}
     )
     def post(self, request):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        
         serializer = AddImageSerializer(data=request.data)
         if serializer.is_valid():
             event = Event.objects.get(pk=serializer.validated_data['event_id'])
@@ -244,19 +260,21 @@ class GetVisits(APIView):
 
 class FormVisit(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    permission_classes=[IsAuthenticated]
+
     @swagger_auto_schema(
         operation_description="Формирование чернового визита",
         responses={200: "Visit formed", 400: "Bad Request"}
     )
     def put(self, request, pk):
 
-        if not request.user.is_staff:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         req = get_object_or_404(Visit, pk=pk)
         if not req.status == 'draft':
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
+        
+        if not request.user == req.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        
         if req.created_at > datetime.now(timezone.utc):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -302,10 +320,6 @@ class ModerateVisit(APIView):
         responses={200: "Visit deleted"}
     )
     def delete(self, request, pk):
-
-        if not request.user.is_staff:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         req = get_object_or_404(Visit, pk=pk)
         req.status = 'deleted'
         req.ended_at = datetime.now()
@@ -350,9 +364,6 @@ class EditRequestThreat(APIView):
         responses={200: "Request updated", 400: "Bad Request"}
     )
     def delete(self, request, pk):
-
-        if not request.user.is_staff:
-            return Response(status=status.HTTP_403_FORBIDDEN)
 
         if 'event_id' in request.data:
             record = get_object_or_404(EventVisit, visit=pk, event=request.data['event_id'])
